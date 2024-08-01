@@ -82,6 +82,12 @@ Result:
 }
 ```
 
+## TODO:
+
+- Add more strong typying structures, no raw bits like `B4`, ...
+- Add remaining messages.
+- Try removing `bitfield` as maximum as possible, replacing it with custom types, using `binrw` directives and magic macros.
+
 ## References
 
 - [binrw](https://binrw.rs/)
