@@ -14,13 +14,9 @@ pub enum LongitudeDirection {
     West(f64),
 }
 
-pub struct LatitudeType {}
-
-pub struct LongitudeType {}
-
 // FIXME: duplicate code...
 
-impl Specifier for LatitudeType {
+impl Specifier for LatitudeDirection {
     const BITS: usize = 24;
     type Bytes = u32;
     type InOut = LatitudeDirection;
@@ -53,7 +49,7 @@ impl Specifier for LatitudeType {
     }
 }
 
-impl Specifier for LongitudeType {
+impl Specifier for LongitudeDirection {
     const BITS: usize = 24;
     type Bytes = u32;
     type InOut = LongitudeDirection;
@@ -95,26 +91,26 @@ mod tests {
         //assert_eq!(LatitudeType::from_bytes(0x010000).unwrap(), 0.0); FIXME MAX RANGE ??
         //assert_eq!(LatitudeType::from_bytes(0xFFFFFF).unwrap(), 0.0); FIXME MAX RANGE ??
         assert_eq!(
-            LatitudeType::from_bytes(0x000000).unwrap(),
+            LatitudeDirection::from_bytes(0x000000).unwrap(),
             LatitudeDirection::North(0.0)
         );
         assert_eq!(
-            LatitudeType::from_bytes(0x000020).unwrap(),
+            LatitudeDirection::from_bytes(0x000020).unwrap(),
             LatitudeDirection::North(45.0)
         );
         assert_eq!(
-            LatitudeType::from_bytes(0x0000E0).unwrap(),
+            LatitudeDirection::from_bytes(0x0000E0).unwrap(),
             LatitudeDirection::South(-45.0)
         );
         assert_eq!(
-            LatitudeType::from_bytes(0x000040).unwrap(),
+            LatitudeDirection::from_bytes(0x000040).unwrap(),
             LatitudeDirection::North(90.0)
         );
         assert_eq!(
-            LatitudeType::from_bytes(0x000080).unwrap(),
+            LatitudeDirection::from_bytes(0x000080).unwrap(),
             LatitudeDirection::South(-180.0)
         );
-        match LatitudeType::from_bytes(0xFFFF7F).unwrap() {
+        match LatitudeDirection::from_bytes(0xFFFF7F).unwrap() {
             LatitudeDirection::North(val) => assert!(val > 179.0), // almost 180..
             LatitudeDirection::South(val) => assert!(val > 179.0), // almost 180..
         }

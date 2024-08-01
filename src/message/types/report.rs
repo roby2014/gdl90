@@ -7,12 +7,9 @@ use modular_bitfield::{
     BitfieldSpecifier,
 };
 
-use crate::message::types::{
-    altitude::AltitudeType,
-    call_sign::CallSignType,
-    cords::{LatitudeType, LongitudeType},
-    velocity::VelocityType,
-};
+use crate::message::types::{altitude::Altitude, call_sign::CallSignType, velocity::Velocity};
+
+use super::cords::{LatitudeDirection, LongitudeDirection};
 
 /// Common Report data structure.
 #[bitfield]
@@ -28,25 +25,25 @@ pub struct Report {
     pub participant_address: B24,
 
     /// Latitude.
-    pub latitude: LatitudeType,
+    pub latitude: LatitudeDirection,
 
     /// Longitude.
-    pub longitude: LongitudeType,
+    pub longitude: LongitudeDirection,
 
     /// Altitude.
-    pub altitude: AltitudeType,
+    pub altitude: Altitude,
 
     /// Miscellaneous indicator.
     pub misc_indicators: MiscIndicator,
 
-    /// Navigation Integrity Category. TODO: better type?
-    pub nic: B4,
-
     /// Navigation Accuracy Category for Position. TODO: better type?
     pub nacp: B4,
 
+    /// Navigation Integrity Category. TODO: better type?
+    pub nic: B4,
+
     // Velocity.
-    pub velocity: VelocityType,
+    pub velocity: Velocity,
 
     /// Track/Heading.
     pub track_heading: B8,
@@ -58,7 +55,7 @@ pub struct Report {
     pub call_sign: CallSignType,
 
     /// Emergency/Priority Code.
-    pub ep_code: EmergencyPriorityCodeCategory,
+    pub emergency_priority_code: EmergencyPriorityCodeCategory,
 
     /// Spare (reserved for future use).
     pub reserved: B4,
@@ -193,7 +190,14 @@ pub enum EmergencyPriorityCodeCategory {
 
 #[cfg(test)]
 mod tests {
-    use crate::message::ownship_report::OwnshipReportMessage;
+    use crate::message::{
+        ownship_report::OwnshipReportMessage,
+        types::{
+            altitude::Altitude,
+            cords::{LatitudeDirection, LongitudeDirection},
+            velocity::VelocityType,
+        },
+    };
 
     use super::*;
     use std::io::Cursor;
@@ -224,8 +228,35 @@ mod tests {
             TrafficAlert::NoTraffic
         );
         assert_eq!(
-            parsed.ownship_report.traffic_alert_status(),
-            TrafficAlert::NoTraffic
+            parsed.ownship_report.address_type(),
+            AddressType::ADSBWithICAOAddress
         );
+        assert_eq!(
+            parsed.ownship_report.latitude(),
+            LatitudeDirection::North(44.907066822052)
+        );
+        assert_eq!(
+            parsed.ownship_report.longitude(),
+            LongitudeDirection::West(-122.9948616027832)
+        );
+        assert_eq!(parsed.ownship_report.altitude(), Altitude::Valid(5000));
+        assert_eq!(parsed.ownship_report.nic(), 10);
+        assert_eq!(parsed.ownship_report.nacp(), 9);
+        assert_eq!(
+            parsed.ownship_report.velocity(),
+            Velocity {
+                h_vel: VelocityType::Horizontal(123),
+                v_vel: VelocityType::Vertical(64)
+            }
+        );
+        assert_eq!(
+            parsed.ownship_report.emergency_priority_code(),
+            EmergencyPriorityCodeCategory::NoEmergency
+        );
+        assert_eq!(
+            parsed.ownship_report.emmiter_cattegory(),
+            EmmiterCategory::Light
+        );
+        assert_eq!(parsed.ownship_report.call_sign().tail_number, "N825V");
     }
 }

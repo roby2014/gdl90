@@ -2,12 +2,15 @@
 
 use modular_bitfield::Specifier;
 
-pub struct CallSignType {}
+#[derive(Debug)]
+pub struct CallSignType {
+    pub tail_number: String,
+}
 
 impl Specifier for CallSignType {
     const BITS: usize = 64;
     type Bytes = u64;
-    type InOut = String;
+    type InOut = CallSignType;
 
     fn into_bytes(input: Self::InOut) -> Result<Self::Bytes, modular_bitfield::error::OutOfBounds> {
         unimplemented!()
@@ -20,7 +23,7 @@ impl Specifier for CallSignType {
             .unwrap_or("invalid_call_sign")
             .trim()
             .to_string();
-        Ok(str)
+        Ok(CallSignType { tail_number: str })
     }
 }
 
@@ -31,6 +34,6 @@ mod tests {
     #[test]
     fn it_works() {
         let data = u64::to_be(0x4e38323556202020);
-        assert_eq!(CallSignType::from_bytes(data).unwrap(), "N825V");
+        assert_eq!(CallSignType::from_bytes(data).unwrap().tail_number, "N825V");
     }
 }

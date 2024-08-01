@@ -11,9 +11,7 @@ pub enum Altitude {
     InvalidOrUnknown,
 }
 
-pub struct AltitudeType {}
-
-impl Specifier for AltitudeType {
+impl Specifier for Altitude {
     const BITS: usize = 12;
     type Bytes = u32;
     type InOut = Altitude;

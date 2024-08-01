@@ -54,9 +54,6 @@ mod tests {
     use super::*;
     use std::io::Cursor;
 
-    // FLAG(8b) MESSAGEID(8b)   PAYLOAD(xb) CRC(16b)    FLAG(8b)
-    // 0x7E     0x00            ...         0x8BB3      0x7E
-
     #[test]
     fn msg_heartbeat() {
         let mut data = Cursor::new(b"\x7E\x00\x81\x41\xDB\xD0\x08\x02\xB3\x8B\x7E");
