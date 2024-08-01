@@ -13,7 +13,7 @@ Note: Work in progress, feel free to contribute.
 [ghcommit-image]: https://img.shields.io/github/last-commit/roby2014/gdl90
 [ghcommit]: https://github.com/roby2014/gdl90/
 
-This crate provides types and structures for handling, encoding and decoding [GDL90 messages](https://www.faa.gov/sites/faa.gov/files/air_traffic/technology/adsb/archival/GDL90_Public_ICD_RevA.PDF).
+This crate provides types and structures for handling [GDL90 messages](https://www.faa.gov/sites/faa.gov/files/air_traffic/technology/adsb/archival/GDL90_Public_ICD_RevA.PDF).
 
 It uses Rust crates such as [binrw](https://github.com/jam1garner/binrw) and [modular-bitfield](https://github.com/Robbepop/modular-bitfield) to efficiently
 represent and manipulate these message types.
@@ -24,7 +24,7 @@ represent and manipulate these message types.
 messages via onboard datalink. It broadcasts your aircraft's position, velocity, projected track, altitude
 and flight identification to other equipped aircraft in your vicinity, as well as to ground-based transceivers maintained by the FAA.
 
-Many ADS-B transponders (such as [uAvionix ping20Si](https://uavionix.com/products/ping20si/)) use this protocol for their I/O interface. With this crate, you can easily integrate one of those in your system.
+Many ADS-B transponders (such as [uAvionix ping20Si](https://uavionix.com/products/ping20si/)) use this protocol for their I/O interfaces. With this crate, you can easily integrate one of those in your *rusty* system.
 
 You can find the full specification [here](https://www.faa.gov/sites/faa.gov/files/air_traffic/technology/adsb/archival/GDL90_Public_ICD_RevA.PDF).
 
@@ -81,6 +81,10 @@ Result:
     flag_byte_end: 126,
 }
 ```
+
+## What is this...
+
+I am not sure if this is considered a parser, decoder or deserializer.
 
 ## TODO:
 
