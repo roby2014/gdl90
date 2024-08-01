@@ -2,6 +2,14 @@
 name = "gdl90"
 version = "0.1.0"
 edition = "2021"
+description = "GDL90 message encoder/decoder"
+license = "MIT"
+repository = "https://github.com/roby2014/gdl90"
+authors = ["Roberto Carlos <roby2x14@gmail.com>"]
+keywords = ["gdl90", "ads-b", "transponders", "uavionix", "binrw"]
+categories = ["encoding", "parsing"]
+readme = "readme.md"
 
 [dependencies]
-bitfield-struct = "0.7"
+binrw = "0.14.0"
+modular-bitfield = "0.11.2"
