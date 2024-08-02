@@ -3,7 +3,7 @@
 //! | Byte # | Name         | Size  | Value                         |
 //! |--------|--------------|-------|-------------------------------|
 //! | 1      |Message ID    | 1     | 10                            |
-//! | 2-28   |Ownship Report| 27    | see [`OwnshipReportMessage`]  |
+//! | 2-28   |Ownship Report| 27    | see [`Report`]                |
 //! |        |Total length  | 28    |                               |
 //!
 
@@ -11,8 +11,7 @@ use binrw::BinRead;
 
 use super::types::report::Report;
 
-/// The Ownship Report is output by the GDL 90 regardless of
-/// whether a valid GPS position fix is available.
+/// The Ownship message contains information on the GNSS position.
 #[derive(BinRead, Debug)]
 #[br(little)]
 pub struct OwnshipReportMessage {

@@ -5,4 +5,3 @@ pub mod call_sign;
 pub mod cords;
 pub mod report;
 pub mod velocity;
-pub mod vertical_metrics;
