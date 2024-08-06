@@ -31,22 +31,51 @@
 
 pub mod message;
 
-use binrw::BinRead;
+use std::io::Cursor;
+
+use binrw::{binread, BinRead, BinResult};
 use message::Gdl90MessageType;
 
-/// Represents a GDL90 message after the start flag (`0x7E`).
-#[derive(BinRead, Debug)]
+fn remove_escapes(data: Vec<u8>) -> Vec<u8> {
+    data
+}
+
+#[binrw::parser(reader, endian)]
+fn parse_message_bytes() -> binrw::BinResult<Vec<u8>> {
+    // TODO: confirm that this 0x7e is not present at next message
+    let mut bytes: Vec<u8> = binrw::helpers::until_exclusive(|&b| b == 0x7e)(reader, endian, ())?;
+
+    // remove check seq
+    bytes.truncate(bytes.len().saturating_sub(2));
+    reader.seek(std::io::SeekFrom::Current(-3))?; // -3 because exclusive byte counts?
+
+    Ok(remove_escapes(bytes))
+}
+
+pub struct Gdl90ControlMessage {}
+
+impl Gdl90ControlMessage {}
+
+pub enum Gdl90ControlMessageType {
+    CallSign,
+    OperationMode,
+    VFR,
+}
+
+#[binread]
+#[derive(Debug)]
 #[br(little, magic = b"\x7E")]
 pub struct Gdl90Message {
-    /// Message data.
+    #[br(temp, parse_with = parse_message_bytes)]
+    data: Vec<u8>,
+
+    #[br(map_stream = |_| Cursor::new(&data))]
     pub message_data: Gdl90MessageType,
 
-    /// Frame check sequence (LSB first).
+    /// assert here
     pub frame_check_seq: u16,
-
-    /// End flag byte.
-    #[br(assert(flag_byte_end == 0x7E))]
-    pub flag_byte_end: u8,
+    //#[br(temp, assert(flag_byte_end == 0x7E))]
+    //pub flag_byte_end: u8,
 }
 
 #[cfg(test)]
