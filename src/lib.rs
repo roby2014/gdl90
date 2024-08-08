@@ -29,6 +29,7 @@
 //!
 //! Note: Work in progress, feel free to contribute.
 
+pub mod control;
 pub mod message;
 
 use std::io::Cursor;
@@ -52,16 +53,6 @@ fn parse_message_bytes() -> binrw::BinResult<Vec<u8>> {
     Ok(remove_escapes(bytes))
 }
 
-pub struct Gdl90ControlMessage {}
-
-impl Gdl90ControlMessage {}
-
-pub enum Gdl90ControlMessageType {
-    CallSign,
-    OperationMode,
-    VFR,
-}
-
 #[binread]
 #[derive(Debug)]
 #[br(little, magic = b"\x7E")]
@@ -74,8 +65,6 @@ pub struct Gdl90Message {
 
     /// assert here
     pub frame_check_seq: u16,
-    //#[br(temp, assert(flag_byte_end == 0x7E))]
-    //pub flag_byte_end: u8,
 }
 
 #[cfg(test)]
@@ -87,7 +76,6 @@ mod tests {
     fn msg_heartbeat() {
         let mut data = Cursor::new(b"\x7E\x00\x81\x41\xDB\xD0\x08\x02\xB3\x8B\x7E");
         let parsed = Gdl90Message::read(&mut data).unwrap();
-        //dbg!(&parsed);
         assert_eq!(parsed.frame_check_seq, 0x8bb3);
         match parsed.message_data {
             Gdl90MessageType::Heartbeat(ref hb) => {}

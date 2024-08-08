@@ -24,6 +24,8 @@ pub mod types;
 pub mod uplink_data;
 
 /// GDL90 IN/OUT message types.
+/// TODO: binread for IN messages
+/// TODO: binread for OUT messages
 #[derive(BinRead, Debug)]
 pub enum Gdl90MessageType {
     #[br(magic = b"\x00")]
