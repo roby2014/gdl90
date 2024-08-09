@@ -25,7 +25,7 @@
 //! }
 //! ```
 //!
-//! Under the hood, this parser uses crates like [`modular-bitfield`] and [`binrw`] to parse message fields.
+//! Under the hood, this parser uses crates like [`modular_bitfield`] and [`binrw`] to parse message fields.
 //!
 //! Note: Work in progress, feel free to contribute.
 
@@ -36,6 +36,15 @@ use std::io::Cursor;
 
 use binrw::{binread, BinRead, BinResult};
 use message::Gdl90MessageType;
+
+pub fn parse(buf: &[u8]) -> Result<Gdl90MessageType, ()> {
+    let r = Gdl90Message::read(&mut Cursor::new(buf));
+    if r.is_ok() {
+        Ok(r.unwrap().message_data)
+    } else {
+        Err(())
+    }
+}
 
 fn remove_escapes(data: Vec<u8>) -> Vec<u8> {
     data
