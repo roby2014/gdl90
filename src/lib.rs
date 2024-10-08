@@ -211,11 +211,45 @@ mod tests {
 
     #[test]
     fn traffic_1() {
-        let data = b"\x7E\x14\x00\x00\x00\x00\x18\x7D\x5D\xF5\xBD\x1F\xB4\x09\x49\x88\x27\x40\x00\x82\x01\x4E\x31\x32\x33\x34\x35\x20\x20\x00\x5e\x66\x7E";
+        let data: Vec<u8> = vec![
+            0x7E, // start 
+            0x14, // message id
+            0x00, // st
+            0x00, // aa
+            0x00, // aa
+            0x00, // aa
+            0x18, // ll
+            0x7D, // ll
+            0x5D, // ll
+            0xF5, // nn
+            0xBD, // nn
+            0x1F, // nn
+            0xB4, // dd
+            0x09, // dm
+            0x49, // ia
+            0x88, // hh
+            0x27, // hv
+            0x40, // vv
+            0x00, // tt
+            0x82, // ee
+            0x01, // cc
+            0x4E, // cc
+            0x31, // cc
+            0x32, // cc
+            0x33, // cc
+            0x34, // cc
+            0x35, // cc
+            0x20, // cc
+            0x20, // cc 
+            0x00, // px
+            0x5E, 0x66, // crc
+            0x7E,
+        ];
         let parsed = Gdl90Message::read(&mut Cursor::new(data)).unwrap();
         assert_eq!(parsed.frame_check_seq, 0x665e);
 
         if let Gdl90DatalinkMessage::TrafficReport { report } = parsed.message_data {
+            //assert_eq!(report.participant_address().to_string(), "0");
             assert!(report.latitude() >= 34.0 && report.latitude() <= 35.0);
             assert!(report.longitude() >= -95.0 && report.longitude() <= -93.0);
             assert_eq!(report.altitude(), Altitude::Valid(2700));

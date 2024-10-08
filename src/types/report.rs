@@ -10,15 +10,13 @@ use modular_bitfield::{
 /// Common Report data structure.
 #[bitfield]
 #[derive(BinRead, Debug)]
+#[br(little)]
 pub struct Report {
     /// Traffic Alert Status.
     pub traffic_alert_status: TrafficAlert,
 
-    /// Address Type.
-    pub address_type: AddressType,
-
-    /// Participant Address.
-    pub participant_address: B24,
+    /// Participant.
+    pub participant: Participant,
 
     /// Latitude.
     pub latitude: Cord,
@@ -80,25 +78,15 @@ pub enum TrafficAlert {
 }
 
 /// 4-bit field which describes the type of address conveyed in the [`Report::participant_address`] field.
-#[derive(BitfieldSpecifier, Debug, PartialEq)]
-#[bits = 4]
+#[derive(Debug, PartialEq)]
 pub enum AddressType {
     ADSBWithICAOAddress,
-    ADSBWithSelfAssignedAddress,
-    TISBWithICAOAddress,
+    ADSBWithSelfAssignedAddress ,
+    TISBWithICAOAddress ,
     TISBWithTrackFileID,
     SurfaceVehicle,
     GroundStationBeacon,
-    Reserved0,
-    Reserved1,
-    Reserved2,
-    Reserved3,
-    Reserved4,
-    Reserved5,
-    Reserved6,
-    Reserved7,
-    Reserved8,
-    Reserved9,
+    Reserved,
 }
 
 /// 8-bit field which describes the Emmiter Category.
@@ -181,6 +169,47 @@ pub enum MiscIndicator {
     ReportExtrapolated,
     OnGround,
     Airborne,
+}
+
+#[derive(PartialEq, Debug)]
+
+pub struct Participant {
+    /// Address Type.
+    pub address_type: AddressType,
+
+    /// Participant Address.
+    pub participant_address: u32,
+}
+
+impl Specifier for Participant {
+    const BITS: usize = 28;
+    type Bytes = u32;
+    type InOut = Participant;
+
+    fn into_bytes(input: Self::InOut) -> Result<Self::Bytes, modular_bitfield::error::OutOfBounds> {
+        unimplemented!()
+    }
+
+    fn from_bytes(
+        input: Self::Bytes,
+    ) -> Result<Self::InOut, modular_bitfield::error::InvalidBitPattern<Self::Bytes>> {
+        // input = e.g 76831408 (0x4945AB0) where 
+        // address_type = 0
+        // participant_address = AB4549
+        let address_type = match input & 0x000000F {
+            0 => AddressType::ADSBWithICAOAddress,
+            1 => AddressType::ADSBWithSelfAssignedAddress,
+            2 => AddressType::TISBWithICAOAddress,
+            3 => AddressType::TISBWithTrackFileID,
+            4 => AddressType::SurfaceVehicle,
+            5 => AddressType::GroundStationBeacon,
+            _ => AddressType::Reserved,
+        };
+        // FIXME: simplify this?
+        let participant_address = (((input & 0xFFFFFF0) >> 4) ).to_be() >> 8;
+        let result = Participant { address_type, participant_address };
+        Ok(result)
+    }
 }
 
 impl Specifier for MiscIndicator {
@@ -366,6 +395,8 @@ impl Specifier for Velocity {
 
 #[cfg(test)]
 mod tests {
+    use std::io::Cursor;
+
     use super::*;
 
     #[test]
@@ -455,5 +486,42 @@ mod tests {
     #[test]
     fn horizontal() {
         //todo!();
+    }
+
+    #[test]
+    fn full_report() {
+        let data: Vec<u8> = vec![
+            0x00, // st
+            0xAB, // aa
+            0x45, // aa
+            0x49, // aa
+            0x1F, // ll
+            0xEF, // ll
+            0x15, // ll
+            0xA8, // nn
+            0x89, // nn
+            0x78, // nn
+            0x0F, // dd
+            0x09, // dm
+            0xA9, // ia
+            0x07, // hh
+            0xB0, // hv
+            0x01, // vv
+            0x20, // tt
+            0x01, // ee
+            0x4E, // cc
+            0x38, // cc
+            0x32, // cc
+            0x35, // cc
+            0x56, // cc
+            0x20, // cc
+            0x20, // cc
+            0x20, // cc
+            0x00, // px
+        ];
+        let report = Report::read(&mut Cursor::new(data)).unwrap();
+        assert_eq!(report.participant().address_type, AddressType::ADSBWithICAOAddress);
+        assert_eq!(report.participant().participant_address.to_string(), "11224393"); // AB4549
+        dbg!(&report);
     }
 }
