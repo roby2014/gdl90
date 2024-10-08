@@ -39,7 +39,7 @@ pub enum Gdl90DatalinkMessage {
     /// | 2      |Status Byte 1     | 1     | see [`HeartbeatStatusByte1`]                      |
     /// | 3      |Status Byte 2     | 1     | see [`HeartbeatStatusByte2`]                      |
     /// | 4-5    |Timestamp         | 2     | Seconds since 0000Z, bits 15-0 (LSB byte first)   |
-    /// | 6-7    |Message Counts    | 2     | see [`MessageCounts`]                             |
+    /// | 6-7    |Message Counts    | 2     |                                                   |
     /// |        |Total length      | 7     |                                                   |
     ///
     #[br(little, magic = b"\x00")]
@@ -106,7 +106,7 @@ pub enum Gdl90DatalinkMessage {
     /// | Byte # | Name         | Size  | Value                         |
     /// |--------|--------------|-------|-------------------------------|
     /// | 1      |Message ID    | 1     | 10                            |
-    /// | 2-28   |Ownship Report| 27    | see [`OwnshipReportMessage`]  |
+    /// | 2-28   |Ownship Report| 27    | see [`Report`]  |
     /// |        |Total length  | 28    |                               |
     ///
     #[br(little, magic = b"\x0A")]
@@ -122,7 +122,7 @@ pub enum Gdl90DatalinkMessage {
     /// | Byte # | Name         | Size  | Value                         |
     /// |--------|--------------|-------|-------------------------------|
     /// | 1      |Message ID    | 1     | 10                            |
-    /// | 2-28   |Traffic Report| 27    | see [`TrafficReportMessage`]  |
+    /// | 2-28   |Traffic Report| 27    | see [`Report`]  |
     /// |        |Total length  | 28    |                               |
     ///
     #[br(magic = b"\x14")]

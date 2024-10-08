@@ -77,7 +77,7 @@ pub enum TrafficAlert {
     Reserved13,
 }
 
-/// 4-bit field which describes the type of address conveyed in the [`Report::participant_address`] field.
+/// 4-bit field which describes the type of address conveyed in the [`Participant::participant_address`] field.
 #[derive(Debug, PartialEq)]
 pub enum AddressType {
     ADSBWithICAOAddress,
