@@ -212,7 +212,7 @@ mod tests {
     #[test]
     fn traffic_1() {
         let data: Vec<u8> = vec![
-            0x7E, // start 
+            0x7E, // start
             0x14, // message id
             0x00, // st
             0x00, // aa
@@ -240,7 +240,7 @@ mod tests {
             0x34, // cc
             0x35, // cc
             0x20, // cc
-            0x20, // cc 
+            0x20, // cc
             0x00, // px
             0x5E, 0x66, // crc
             0x7E,
@@ -256,6 +256,14 @@ mod tests {
         } else {
             panic!("Expected OwnshipReport message");
         }
+    }
+
+    /* OwnshipGeoometricAltitude */
+
+    #[test]
+    fn ownship_geometric_altitude() {
+        let parsed = read_raw(&[126, 11, 0, 202, 0, 12, 251, 136, 126]);
+        assert!(parsed.is_ok());
     }
 
     #[test]

@@ -22,7 +22,7 @@ use crate::types::uplink_data::UplinkPayload;
 
 use binrw::binread;
 
-const GDL90_GEO_ALTITUDE_FACTOR: i16 = 5;
+const GDL90_GEO_ALTITUDE_FACTOR: i32 = 5;
 
 /// GDL90 IN/OUT message types.
 /// TODO: binread for IN messages
@@ -144,8 +144,9 @@ pub enum Gdl90DatalinkMessage {
     ///
     #[br(magic = b"\x0B")]
     OwnshipGeoometricAltitude {
-        #[br(map = |x: i16| x * GDL90_GEO_ALTITUDE_FACTOR)]
-        ownship_geo_altitude: i16,
+        #[br(big)]
+        #[br(map = |x: i16| (x as i32) * GDL90_GEO_ALTITUDE_FACTOR)]
+        ownship_geo_altitude: i32,
         vertical_metrics: VerticalMetrics,
     },
 

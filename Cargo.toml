@@ -1,11 +1,11 @@
 [package]
 name = "gdl90"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
 description = "GDL90 message encoder/decoder"
 license = "MIT"
 repository = "https://github.com/roby2014/gdl90"
-authors = ["Roberto Carlos <roby2x14@gmail.com>"]
+authors = ["Roberto Carlos Petrisoru <roby2x14@gmail.com>"]
 keywords = ["gdl90", "ads-b", "transponders", "uavionix", "binrw"]
 categories = ["encoding", "parsing"]
 readme = "readme.md"
